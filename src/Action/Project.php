@@ -18,4 +18,18 @@ final class Project
         $projects = $this->ps->fetch();
         return $response->withJSON($projects);
     }
+
+    public function create($request, $response)
+    {
+        $args = $request->getParams();
+        $project = $this->ps->create($args['namespace'], $args['externalOAuthToken'], $args['gateway'], $args['paymentUri'], $args['refundUri']);
+        return $response->withJSON($project);
+    }
+
+    public function delete($request, $response, $args)
+    {
+        $this->ps->delete($args['projectId']);
+        
+        return $response;
+    }
 }

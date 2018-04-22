@@ -3,15 +3,25 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-// Routes
 
-$app->get('/[{name}]', function (Request $request, Response $response, array $args) {
-    // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
+$app->group('/api/v1', function() {
+    
+    // projects
+    $this->group('/projects', function(){
+        // projects        
+        $this->get('', 'SimplePayApp\Action\Project:fetch');
+        $this->post('', 'SimplePayApp\Action\Project:create');
+        $this->delete('/{projectId}', 'SimplePayApp\Action\Project:delete');
 
-    // Render index view
-    return $this->renderer->render($response, 'index.phtml', $args);
+        // project payments
+        $this->group('/{projectId}/payments', function(){
+            $this->get('', 'SimplePayApp\Action\Payment:fetch');
+            // $this->post('', 'SimplePayApp\Action\Payment:create');
+        });
+    });
+
+    
 });
-
-$app->get('/api/projects', 'SimplePayApp\Action\Project:fetch');
+// ->add('SimplePayApp\Middleware\Auth');
+    
 // $app->get('/api/projects/{id}', 'SimplePayApp\Action\Project:fetchOne');

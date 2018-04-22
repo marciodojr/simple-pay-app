@@ -23,12 +23,12 @@ class Order
     private $id;
 
      /**
-     * @ORM\Column(name="own_id", type="string", length=128)
+     * @ORM\Column(name="own_id", type="string", length=128, nullable=false)
      */
     private $ownId;
 
     /**
-     * @ORM\Column(name="gateway_id", type="string", length=128)
+     * @ORM\Column(name="gateway_id", type="string", length=128, nullable=false)
      */
     private $gatewayId;
 

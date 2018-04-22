@@ -23,23 +23,29 @@ class Payment
     private $id;
 
     /**
-     * @ORM\Column(name="gateway_id", type="string", length=128)
+     * @ORM\ManyToOne(targetEntity="Project")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=false)
+     */
+    private $projectId;
+
+    /**
+     * @ORM\Column(name="gateway_id", type="string", length=128, nullable=false)
      */
     private $gatewayId;
 
     /**
-     * @ORM\Column(name="status", type="string", length=64)
+     * @ORM\Column(name="status", type="string", length=64, nullable=false)
      */
     private $status;
 
     /**
-     * @ORM\Column(name="project_notified", type="boolean")
+     * @ORM\Column(name="project_notified", type="boolean", nullable=false)
      */
     private $projectNotified;
 
-    public function __construct($ownId, $gatewayId, $status)
+    public function __construct($projectId, $gatewayId, $status)
     {
-        $this->ownId = $ownId;
+        $this->projectId = $projectId;
         $this->gatewayId = $gatewayId;
         $this->status = $status;
         $this->projectNotified = false;

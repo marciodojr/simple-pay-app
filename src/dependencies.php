@@ -1,13 +1,15 @@
 <?php
 // DIC configuration
 
+use SimplePayApp\Service\Entity\ProjectService;
+use SimplePayApp\Action\Project;
+use SimplePayApp\Service\Entity\PaymentService;
+use SimplePayApp\Action\Payment;
+
 $container = $app->getContainer();
 
-// view renderer
-$container['renderer'] = function ($c) {
-    $settings = $c->get('settings')['renderer'];
-    return new Slim\Views\PhpRenderer($settings['template_path']);
-};
+
+// ############################ LOGGER
 
 // monolog
 $container['logger'] = function ($c) {
@@ -18,6 +20,8 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+
+// ############################ ORM
 // Doctrine
 $container['em'] = function ($c) {
     $settings = $c->get('settings');
@@ -31,12 +35,44 @@ $container['em'] = function ($c) {
     return Doctrine\ORM\EntityManager::create($settings['doctrine']['connection'], $config);
 };
 
-//ProjectService
-$container['SimplePayApp\Service\Entity\ProjectService'] = function ($c) {
-    return new SimplePayApp\Service\Entity\ProjectService($c->get('em'));
+// ############################ AUTH
+// AuthService
+
+$container['SimplePayApp\Service\Auth\AuthService'] = function ($c) {
+    $logger = $c->get('logger');
+    $logger->info('Auth service call');
+    return new SimplePayApp\Service\Auth\AuthService();
 };
 
+// AuthMiddleware
+
+$container['SimplePayApp\Middleware\Auth'] = function ($c) {
+    $logger = $c->get('logger');
+    $logger->info('Auth middleware call');
+    return new SimplePayApp\Middleware\Auth($c->get('SimplePayApp\Service\Auth\AuthService'));
+};
+
+
+// ############################ ORM Services
+
+//ProjectService
+$container[ProjectService::class] = function ($c) {
+    return new ProjectService($c->get('em'));
+};
+
+//PaymentService
+$container[PaymentService::class] = function ($c) {
+    return new PaymentService($c->get('em'));
+};
+
+// ############################ Actions (Controllers)
+
 // ProjectAction
-$container['SimplePayApp\Action\Project'] = function ($c) {
-    return new SimplePayApp\Action\Project($c->get('SimplePayApp\Service\Entity\ProjectService'));
+$container[Project::class] = function ($c) {
+    return new Project($c->get(ProjectService::class));
+};
+
+// PaymentAction
+$container[Payment::class] = function ($c) {
+    return new Payment($c->get(PaymentService::class));
 };

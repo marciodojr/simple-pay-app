@@ -23,22 +23,29 @@ class Refund
     private $id;
 
     /**
-     * @ORM\Column(name="gateway_id", type="string", length=128)
+     * @ORM\ManyToOne(targetEntity="Payment")
+     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id", nullable=false)
+     */
+    private $paymentId;
+
+    /**
+     * @ORM\Column(name="gateway_id", type="string", length=128, nullable=false)
      */
     private $gatewayId;
 
     /**
-     * @ORM\Column(name="status", type="string", length=64)
+     * @ORM\Column(name="status", type="string", length=64, nullable=false)
      */
     private $status;
 
     /**
-     * @ORM\Column(name="project_notified", type="boolean")
+     * @ORM\Column(name="project_notified", type="boolean", nullable=false)
      */
     private $projectNotified;
 
-    public function __construct($gatewayId, $status)
+    public function __construct($paymentId, $gatewayId, $status)
     {
+        $this->paymentId = $paymentId;
         $this->gatewayId = $gatewayId;
         $this->status = $status;
         $this->projectNotified = false;

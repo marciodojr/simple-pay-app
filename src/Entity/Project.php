@@ -23,32 +23,32 @@ class Project
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=64, unique=true)
+     * @ORM\Column(type="string", length=64, unique=true, nullable=false)
      */
     private $namespace;
 
     /**
-     * @ORM\Column(name="project_oauth_token", type="string", length=256, unique=true)
+     * @ORM\Column(name="project_oauth_token", type="string", length=256, unique=true, nullable=false)
      */
     private $projectOAuthToken;
 
     /**
-     * @ORM\Column(name="external_oauth_token", type="string", length=256)
+     * @ORM\Column(name="external_oauth_token", type="string", length=256, nullable=false)
      */
     private $externalOAuthToken;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=false)
      */
     private $gateway;
 
     /**
-     * @ORM\Column(name="payment_uri", type="string", length=64)
+     * @ORM\Column(name="payment_uri", type="string", length=64, nullable=false)
      */
     private $paymentUri;
     
     /**
-     * @ORM\Column(name="refund_uri", type="string", length=64)
+     * @ORM\Column(name="refund_uri", type="string", length=64, nullable=false)
      */
     private $refundUri;
 
@@ -57,7 +57,7 @@ class Project
     public function __construct($namespace, $projectOAuthToken, $externalOAuthToken, $gateway, $paymentUri, $refundUri)
     {
 
-        if(!in_array($this->gateway, [
+        if(!in_array($gateway, [
             self::GATEWAY_MOIP
         ])) {
             throw new InvalidArgumentException("Invalid gateway '$gateway'");
